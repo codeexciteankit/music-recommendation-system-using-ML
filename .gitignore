@@ -1,0 +1,4 @@
+.env
+plays.csv
+__pycache__/
+venv/

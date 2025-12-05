@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Harmony Finder — Ultimate</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ------------- THEME & LAYOUT ------------- */
+      :root {
+        --bg: #020617;
+        --panel: #071026;
+        --muted: #9aa4b2;
+        --text: #e6eef8;
+        --accent-a: #6366f1;
+        --accent-b: #ec4899;
+        --success: #22c55e;
+        --danger: #ef4444;
+        --glass: rgba(255, 255, 255, 0.03);
+        --card-border: rgba(255, 255, 255, 0.03);
+        --radius: 14px;
+        --trans: 180ms cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial;
+        background: radial-gradient(
+          circle at 10% 10%,
+          #071124 0%,
+          var(--bg) 45%,
+          #000 100%
+        );
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 1200px;
+        display: grid;
+        grid-template-columns: 1fr 360px;
+        gap: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(8, 10, 20, 0.95),
+          rgba(3, 5, 10, 0.98)
+        );
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 18px 60px rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--card-border);
+      }
+      @media (max-width: 920px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+      }
+      .left {
+        padding: 1.5rem;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        position: relative;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .right {
+        padding: 26px;
+        border-left: 1px solid var(--card-border);
+        background: linear-gradient(
+          0deg,
+          rgba(8, 10, 20, 0.6),
+          rgba(6, 7, 14, 0.6)
+        );
+      }
+
+      .brand {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.16),
+            rgba(0, 0, 0, 0.06)
+          ),
+          rgba(0, 0, 0, 0.12);
+
+        backdrop-filter: blur(6px);
+        padding: 8px 0;
+      }
+
+      .logo {
+        width: 46px;
+        height: 46px;
+        border-radius: 999px;
+        background: conic-gradient(
+          from 180deg,
+          var(--accent-a),
+          var(--accent-b),
+          #f97316
+        );
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
+      }
+      h1 {
+        margin: 0;
+        font-size: 1.15rem;
+      }
+      .muted {
+        color: var(--muted);
+        font-size: 0.88rem;
+        margin-top: 4px;
+      }
+
+      /* search card */
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.01),
+          rgba(255, 255, 255, 0.018)
+        );
+        padding: 12px;
+        border-radius: 12px;
+        border: 1px solid var(--card-border);
+      }
+      .search {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .input {
+        position: relative;
+        flex: 1;
+        min-width: 180px;
+      }
+      .input input {
+        width: 100%;
+        padding: 12px 46px 12px 46px;
+        border-radius: 999px;
+        border: 1px solid var(--card-border);
+        background: var(--panel);
+        color: var(--text);
+        font-size: 0.95rem;
+        outline: none;
+        transition: var(--trans);
+      }
+      .icon-left {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--muted);
+      }
+      .clear {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        display: none;
+      }
+      .clear.show {
+        display: inline;
+      }
+      .btn {
+        padding: 10px 14px;
+        border-radius: 999px;
+        border: none;
+        color: white;
+        background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn.secondary {
+        background: linear-gradient(90deg, #22c55e, #84cc16);
+      }
+      .chip {
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: var(--glass);
+        color: var(--muted);
+        border: 1px solid var(--card-border);
+        cursor: pointer;
+      }
+
+      /* results */
+      .results-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .badge {
+        padding: 6px 10px;
+        border-radius: 999px;
+        color: var(--muted);
+        background: var(--glass);
+        border: 1px solid var(--card-border);
+      }
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-height: 520px;
+        overflow: auto;
+        padding-right: 6px;
+        margin-top: 10px;
+      }
+      .item {
+        display: grid;
+        grid-template-columns: 64px 1fr 140px;
+        gap: 12px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 12px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.01),
+          rgba(255, 255, 255, 0.015)
+        );
+        border: 1px solid var(--card-border);
+      }
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
+        background: conic-gradient(#6366f1, #ec4899, #f97316);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 20px;
+      }
+      .title {
+        font-size: 1rem;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .sub {
+        color: var(--muted);
+        margin-top: 6px;
+        font-size: 0.88rem;
+      }
+
+      .feat-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 8px;
+      }
+      .feat-label {
+        width: 58px;
+        color: var(--muted);
+        font-size: 0.78rem;
+      }
+      .bar {
+        flex: 1;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.01);
+      }
+      .bar > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, #f97316, #ec4899);
+      }
+
+      .playcol {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 8px;
+        justify-content: center;
+      }
+      .play-btn {
+        padding: 8px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--card-border);
+        background: transparent;
+        color: var(--text);
+        cursor: pointer;
+      }
+      .progress {
+        width: 100%;
+        height: 8px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.03);
+        overflow: hidden;
+      }
+      .progress > i {
+        display: block;
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+      }
+
+      .small {
+        font-size: 0.86rem;
+        color: var(--muted);
+      }
+
+      /* modal */
+      .modal {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        background: rgba(0, 0, 0, 0.6);
+      }
+      .modal.show {
+        display: flex;
+      }
+      .modal-card {
+        width: 90%;
+        max-width: 900px;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #000;
+        border: 1px solid rgba(255, 255, 255, 0.03);
+      }
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background: linear-gradient(90deg, #0b1220, #071026);
+      }
+      .modal-body {
+        padding: 0;
+        background: #000;
+      }
+
+      /* queue */
+      .queue {
+        margin-top: 12px;
+        display: flex;
+        gap: 8px;
+        flex-direction: column;
+        max-height: 180px;
+        overflow: auto;
+      }
+
+      /* small responsive */
+      @media (max-width: 600px) {
+        .item {
+          grid-template-columns: 56px 1fr 96px;
+        }
+        .avatar {
+          width: 56px;
+          height: 56px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app" id="app">
+      <!-- LEFT -->
+      <section class="left" aria-labelledby="app-title">
+        <div class="brand">
+          <div class="logo">🎧</div>
+          <div>
+            <h1 id="app-title">Harmony Finder • Ultimate</h1>
+            <div class="muted">
+              KNN + features + Spotify & YouTube integration
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="search" role="search" aria-label="Search songs">
+            <div class="input">
+              <span class="icon-left">🔎</span>
+              <input
+                id="songInput"
+                placeholder="Try: 'Blinding Lights', 'Shape of You'..."
+                aria-label="Song name or artist"
+              />
+              <button id="clearBtn" class="clear" aria-label="Clear">✕</button>
+            </div>
+
+            <button id="searchBtn" class="btn">Search</button>
+            <button
+              id="saveBtn"
+              class="btn secondary"
+              title="Save current playlist"
+            >
+              Save
+            </button>
+          </div>
+
+          <div
+            style="margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap"
+          >
+            <button class="chip" data-sample="Blinding Lights">
+              Blinding Lights
+            </button>
+            <button class="chip" data-sample="Shape of You">
+              Shape of You
+            </button>
+            <button class="chip" data-sample="Levitating">Levitating</button>
+            <button class="chip" data-sample="Someone Like You">
+              Someone Like You
+            </button>
+          </div>
+        </div>
+
+        <section class="card" style="margin-top: 8px">
+          <div class="results-head">
+            <div><strong>Recommendations</strong></div>
+            <div class="badge" id="badge">waiting</div>
+          </div>
+
+          <div id="errorBox" class="error" style="display: none"></div>
+
+          <div class="list" id="resultsList">
+            <div class="empty">
+              <div style="font-size: 30px">🎶</div>
+              <div style="margin-top: 8px">
+                Enter a song to get recommendations. Previews & YouTube
+                available when possible.
+              </div>
+            </div>
+          </div>
+
+          <!-- QUEUE -->
+          <div style="margin-top: 12px">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+              "
+            >
+              <div>
+                <strong>Play Queue</strong>
+                <span class="small" id="queueCount">(0)</span>
+              </div>
+              <div>
+                <button
+                  id="clearQueue"
+                  class="btn"
+                  style="background: linear-gradient(90deg, #ef4444, #f97316)"
+                >
+                  Clear
+                </button>
+              </div>
+            </div>
+            <div class="queue" id="queueList"></div>
+          </div>
+        </section>
+
+        <footer style="margin-top: 8px" class="small">
+          Harmony Finder — Demo • Click a play button to start audio
+        </footer>
+      </section>
+
+      <!-- RIGHT -->
+      <aside class="right" role="complementary">
+        <h3>About & Tools</h3>
+        <p class="small">
+          Recommendations are computed with KNN on audio features. Use the
+          YouTube button to open an embedded player (needs backend). Use Spotify
+          button to open the track on Spotify (if available).
+        </p>
+
+        <div style="margin-top: 12px">
+          <div style="display: flex; gap: 8px; margin-bottom: 8px">
+            <button
+              id="stopAll"
+              class="btn"
+              style="background: linear-gradient(90deg, #ef4444, #f97316)"
+            >
+              Stop
+            </button>
+            <a
+              id="analyticsLink"
+              class="btn"
+              href="http://localhost:8501"
+              target="_blank"
+              rel="noopener"
+              >Analytics</a
+            >
+          </div>
+
+          <div style="margin-top: 12px">
+            <div class="small">Pro tips</div>
+            <ol style="margin: 8px 0 0 18px; color: var(--muted)">
+              <li>Search for popular songs for better matches</li>
+              <li>Use Save → CSV to download playlists</li>
+              <li>Enable Spotify/YT backend for full experience</li>
+            </ol>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- YouTube Modal -->
+    <div id="ytModal" class="modal" aria-hidden="true">
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-label="YouTube player"
+      >
+        <div class="modal-header">
+          <div id="ytTitle" style="color: var(--text); font-weight: 700">
+            YouTube
+          </div>
+          <div>
+            <button id="openInYT" class="btn" style="margin-right: 8px">
+              Open on YouTube
+            </button>
+            <button
+              id="closeModal"
+              class="btn"
+              style="background: linear-gradient(90deg, #ef4444, #f97316)"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div
+          class="modal-body"
+          id="ytFrameWrap"
+          style="
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <!-- iframe inserted dynamically -->
+        </div>
+      </div>
+    </div>
+    <!-- Spotify Modal -->
+    <div id="spModal" class="modal" aria-hidden="true">
+      <div
+        class="modal-card"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Spotify player"
+      >
+        <div class="modal-header">
+          <div id="spTitle" style="color: var(--text); font-weight: 700">
+            Spotify
+          </div>
+          <div>
+            <a
+              id="openInSpotify"
+              class="btn"
+              href="#"
+              target="_blank"
+              rel="noopener"
+              style="margin-right: 8px"
+              >Open in Spotify</a
+            >
+            <button
+              id="closeSpModal"
+              class="btn"
+              style="background: linear-gradient(90deg, #ef4444, #f97316)"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <div
+          class="modal-body"
+          id="spFrameWrap"
+          style="
+            height: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          "
+        >
+          <!-- iframe inserted dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // ----------------------------
+      // Harmony Finder — Ultimate JS
+      // ----------------------------
+      const $ = (s) => document.querySelector(s);
+      const $all = (s) => Array.from(document.querySelectorAll(s));
+
+      const songInput = $("#songInput");
+      const clearBtn = $("#clearBtn");
+      const searchBtn = $("#searchBtn");
+      const saveBtn = $("#saveBtn");
+      const resultsList = $("#resultsList");
+      const badge = $("#badge");
+      const errorBox = $("#errorBox");
+      const stopAll = $("#stopAll");
+      const queueList = $("#queueList");
+      const queueCount = $("#queueCount");
+      const clearQueueBtn = $("#clearQueue");
+
+      const ytModal = $("#ytModal");
+      const ytFrameWrap = $("#ytFrameWrap");
+      const ytTitle = $("#ytTitle");
+      const closeModal = $("#closeModal");
+      const openInYT = $("#openInYT");
+
+      let currentRecs = [];
+      let audioState = {
+        audio: null,
+        btn: null,
+        timer: null,
+        playingIndex: null,
+      };
+      let playQueue = [];
+
+      // Theme toggle copy (kept simple)
+      const themeToggle = $("#themeToggle");
+      if (themeToggle) {
+        themeToggle.onclick = () => {
+          const isLight =
+            document.documentElement.getAttribute("data-theme") === "light";
+          if (isLight) document.documentElement.removeAttribute("data-theme");
+          else document.documentElement.setAttribute("data-theme", "light");
+        };
+      }
+
+      // Helpers
+      function showError(msg) {
+        errorBox.style.display = "block";
+        errorBox.textContent = msg;
+      }
+      function hideError() {
+        errorBox.style.display = "none";
+        errorBox.textContent = "";
+      }
+      function setBadge(t) {
+        badge.textContent = t;
+      }
+      // Ensure header/search stays visible after rendering results and close any stray modal
+      function ensureHeaderVisible() {
+        try {
+          // scroll the left column to top so search header is visible
+          const left = document.querySelector(".left");
+          if (left) left.scrollTo({ top: 0, behavior: "auto" });
+
+          // close the YouTube modal if accidentally left open
+          const modal = document.getElementById("ytModal");
+          if (modal && modal.classList.contains("show")) {
+            modal.classList.remove("show");
+            modal.setAttribute("aria-hidden", "true");
+            const wrap = document.getElementById("ytFrameWrap");
+            if (wrap) wrap.innerHTML = "";
+            const openInYT = document.getElementById("openInYT");
+            if (openInYT) openInYT.href = "#";
+          }
+
+          // ensure body scroll isn't locked
+          document.body.style.overflow = "";
+
+          // focus the search input to give the user obvious top-of-page context
+          const inp = document.getElementById("songInput");
+          if (inp) inp.focus({ preventScroll: true });
+        } catch (err) {
+          console.warn("ensureHeaderVisible error", err);
+        }
+      }
+
+      // Clear button behavior
+      clearBtn.addEventListener("click", () => {
+        songInput.value = "";
+        clearBtn.classList.remove("show");
+        resultsList.innerHTML = `<div class="empty"><div style="font-size:30px">🎶</div><div style="margin-top:8px">Enter a song to get recommendations.</div></div>`;
+        setBadge("waiting");
+        hideError();
+        stopPlayback();
+      });
+
+      songInput.addEventListener("input", () => {
+        if (songInput.value.trim()) clearBtn.classList.add("show");
+        else clearBtn.classList.remove("show");
+      });
+      songInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          fetchRecs();
+        }
+      });
+
+      $all(".chip").forEach((c) =>
+        c.addEventListener("click", () => {
+          songInput.value = c.dataset.sample || c.textContent;
+          clearBtn.classList.add("show");
+          fetchRecs();
+        })
+      );
+
+      stopAll.addEventListener("click", stopPlayback);
+      clearQueueBtn.addEventListener("click", () => {
+        playQueue = [];
+        renderQueue();
+        stopPlayback();
+      });
+
+      saveBtn.addEventListener("click", saveCurrentRecs);
+
+      // Fetch recommendations from backend
+      async function fetchRecs() {
+        const q = songInput.value.trim();
+        hideError();
+        stopPlayback();
+        if (!q) {
+          showError("Please enter a song name");
+          return;
+        }
+
+        searchBtn.disabled = true;
+        setBadge("searching…");
+        resultsList.innerHTML = "";
+
+        try {
+          const res = await fetch(`/recommend?song=${encodeURIComponent(q)}`);
+          const data = await res.json();
+          searchBtn.disabled = false;
+
+          if (!res.ok || data.error) {
+            setBadge("no results");
+            showError(data.error || "No recommendations found.");
+            return;
+          }
+
+          const recs = data.recommendations || [];
+          currentRecs = recs;
+          setBadge(`${recs.length} results`);
+          renderRecs(recs);
+          ensureHeaderVisible();
+        } catch (err) {
+          console.error(err);
+          searchBtn.disabled = false;
+          setBadge("error");
+          showError("Unable to reach backend. Run Flask (python app.py).");
+        }
+      }
+
+      // Render recommendations
+      function renderRecs(recs) {
+        resultsList.innerHTML = "";
+        if (!recs || recs.length === 0) {
+          resultsList.innerHTML = `<div class="empty"><div style="font-size:22px">😕</div><div>No similar tracks found.</div></div>`;
+          return;
+        }
+
+        const frag = document.createDocumentFragment();
+        recs.forEach((r, idx) => {
+          const item = document.createElement("div");
+          item.className = "item";
+          const preview = r.preview_url || null;
+          const external = r.external_url || null;
+          const feats = r.features || {};
+          const dance = Math.round((feats.danceability ?? 0) * 100);
+          const energy = Math.round((feats.energy ?? 0) * 100);
+          const valence = Math.round((feats.valence ?? 0) * 100);
+          const sim = typeof r.similarity === "number" ? r.similarity : null;
+
+          // similarity label
+          let simLabel = "";
+          if (sim !== null) {
+            if (sim >= 0.85) simLabel = "Very similar";
+            else if (sim >= 0.7) simLabel = "Similar";
+            else simLabel = "Slightly similar";
+          }
+
+          item.innerHTML = `
+          <div class="avatar">${escapeHtml(
+            (r.song || "?").charAt(0).toUpperCase()
+          )}</div>
+          <div class="meta">
+            <div class="title" title="${escapeHtml(r.song)}">${escapeHtml(
+            r.song
+          )}</div>
+            <div class="sub">${escapeHtml(r.artist || "Unknown")}${
+            r.year ? " • " + r.year : ""
+          }${r.popularity ? " • ⭐ " + r.popularity : ""}</div>
+
+            <div class="feat-row"><div class="feat-label">Dance</div><div class="bar"><i style="width:${dance}%"></i></div></div>
+            <div class="feat-row"><div class="feat-label">Energy</div><div class="bar"><i style="width:${energy}%; background:linear-gradient(90deg,#6366f1,#8b5cf6)"></i></div></div>
+            <div class="feat-row"><div class="feat-label">Mood</div><div class="bar"><i style="width:${valence}%; background:linear-gradient(90deg,#22c55e,#84cc16)"></i></div></div>
+          </div>
+
+          <div class="playcol">
+            ${
+              preview
+                ? `<button class="play-btn" data-src="${escapeHtml(
+                    preview
+                  )}" data-idx="${idx}">▶ Play</button>`
+                : `<button class="play-btn" data-src="" data-idx="${idx}" disabled>Preview N/A</button>`
+            }
+            <div style="display:flex; gap:6px; margin-top:6px;">
+              ${
+                external
+                  ? `<a class="btn" href="${escapeHtml(
+                      external
+                    )}" target="_blank" rel="noopener">Spotify</a>`
+                  : ""
+              }
+              <button class="btn" data-yt-query="${encodeURIComponent(
+                (r.song || "") + " " + (r.artist || "")
+              )}" data-idx="${idx}" title="Play on YouTube">YouTube</button>
+              <button class="btn" data-add-queue="${idx}">+ Queue</button>
+            </div>
+            <div class="small" style="margin-top:6px">${
+              simLabel ? simLabel : ""
+            }</div>
+            <div class="progress" aria-hidden="true" style="margin-top:8px"><i></i></div>
+            <div style="display:flex; gap:6px; margin-top:6px; align-items:center">
+              <button class="btn" data-like="${idx}" title="Like (feedback)">👍</button>
+              <button class="btn" data-dislike="${idx}" title="Dislike">👎</button>
+            </div>
+            <div class="eq" style="display:none; margin-top:6px"><span></span><span></span><span></span><span></span></div>
+          </div>
+        `;
+          frag.appendChild(item);
+        });
+
+        resultsList.appendChild(frag);
+
+        // Attach delegated listeners
+        attachDelegatedHandlers();
+      }
+
+      // Delegated handlers for play, youtube, queue, feedback
+      function attachDelegatedHandlers() {
+        // Stop previous binding by removing handler
+        resultsList.onclick = async (e) => {
+          // Play preview
+          const playBtn = e.target.closest(".play-btn");
+          if (playBtn) {
+            const src = playBtn.dataset.src;
+            const idx = Number(playBtn.dataset.idx);
+            const rec = currentRecs[idx];
+            if (!src) {
+              showError(
+                "Preview not available for this track. Use YouTube or Open Spotify."
+              );
+              return;
+            }
+            startPlayback(src, playBtn, idx, rec);
+            // log play
+            logPlay(rec.song, rec.artist, src, "play");
+            return;
+          }
+
+          // YouTube button: open modal with embedded video — requires backend /youtube_search?query=
+          const ytBtn = e.target.closest("button[data-yt-query]");
+          if (ytBtn) {
+            const q = decodeURIComponent(ytBtn.dataset.ytQuery);
+            const idx = Number(ytBtn.dataset.idx);
+            const rec = currentRecs[idx];
+            openYouTube(q, rec);
+            return;
+          }
+
+          // Add to Queue
+          const qBtn = e.target.closest("button[data-add-queue]");
+          if (qBtn) {
+            const idx = Number(qBtn.dataset.addQueue);
+            queueAdd(currentRecs[idx]);
+            return;
+          }
+
+          // Like / Dislike (feedback)
+          const likeBtn = e.target.closest("button[data-like]");
+          if (likeBtn) {
+            const idx = Number(likeBtn.dataset.like);
+            const rec = currentRecs[idx];
+            sendFeedback(rec.song, rec.artist, "like");
+            likeBtn.textContent = "✓ Liked";
+            return;
+          }
+          const dislikeBtn = e.target.closest("button[data-dislike]");
+          if (dislikeBtn) {
+            const idx = Number(dislikeBtn.dataset.dislike);
+            const rec = currentRecs[idx];
+            sendFeedback(rec.song, rec.artist, "dislike");
+            dislikeBtn.textContent = "✓";
+            return;
+          }
+        };
+      }
+
+      // Playback logic (single audio instance) + queue handling
+      function startPlayback(src, btn, idx, rec) {
+        // toggle
+        if (audioState.btn === btn && audioState.audio) {
+          if (audioState.audio.paused) audioState.audio.play();
+          else audioState.audio.pause();
+          return;
+        }
+
+        // new
+        stopPlayback();
+        const audio = new Audio(src);
+        audio.preload = "auto";
+        audioState.audio = audio;
+        audioState.btn = btn;
+        btn.textContent = "⏸ Pause";
+
+        const item = btn.closest(".item");
+        const progressBar = item.querySelector(".progress > i");
+        const eq = item.querySelector(".eq");
+
+        if (eq) {
+          eq.style.display = "flex";
+          animateEq(eq);
+        }
+
+        audioState.timer = setInterval(() => {
+          if (!audioState.audio) return;
+          const dur = audioState.audio.duration || 30;
+          const pct = Math.min(100, (audioState.audio.currentTime / dur) * 100);
+          if (progressBar) progressBar.style.width = pct + "%";
+        }, 150);
+
+        audio.play().catch((err) => {
+          console.warn("Playback blocked", err);
+          showError(
+            "Playback blocked by browser. Click the page or the play button to allow audio."
+          );
+          btn.textContent = "▶ Play";
+          clearInterval(audioState.timer);
+          if (eq) {
+            eq.style.display = "none";
+            stopEq(eq);
+          }
+        });
+
+        audio.onended = () => {
+          btn.textContent = "▶ Play";
+          clearInterval(audioState.timer);
+          if (progressBar) progressBar.style.width = "100%";
+          if (eq) {
+            eq.style.display = "none";
+            stopEq(eq);
+          }
+          audioState.audio = null;
+          audioState.btn = null;
+          audioState.timer = null;
+          // Play next from queue if any
+          if (playQueue.length) {
+            const next = playQueue.shift();
+            renderQueue();
+            // If next has preview_url, play; otherwise skip
+            if (next.preview_url) {
+              const nextIndex = currentRecs.findIndex(
+                (r) => r.song === next.song && r.artist === next.artist
+              );
+              // We create a temp button element to show progress for that item (no need to exist in DOM)
+              const fakeBtn = document.createElement("button");
+              fakeBtn.dataset.src = next.preview_url;
+              fakeBtn.dataset.idx = nextIndex >= 0 ? nextIndex : -1;
+              // append to body to reuse startPlayback with UI? Simpler: call startPlayback directly with src and no btn
+              startPlayback(next.preview_url, fakeBtn, nextIndex, next);
+            } else {
+              // if no preview, auto open YouTube (optional)
+              // openYouTube(encodeURIComponent(next.song + ' ' + (next.artist||'')), next);
+            }
+          }
+        };
+      }
+
+      function stopPlayback() {
+        if (audioState.timer) {
+          clearInterval(audioState.timer);
+          audioState.timer = null;
+        }
+        if (audioState.audio) {
+          try {
+            audioState.audio.pause();
+            audioState.audio.currentTime = 0;
+          } catch (e) {}
+        }
+        if (audioState.btn) audioState.btn.textContent = "▶ Play";
+        // hide eqs
+        $all(".eq").forEach((e) => {
+          e.style.display = "none";
+          stopEq(e);
+        });
+        audioState = {
+          audio: null,
+          btn: null,
+          timer: null,
+          playingIndex: null,
+        };
+      }
+
+      // Queue functions
+      function queueAdd(rec) {
+        playQueue.push(rec);
+        renderQueue();
+      }
+      function renderQueue() {
+        queueList.innerHTML = "";
+        queueCount.textContent = `(${playQueue.length})`;
+        playQueue.forEach((q, i) => {
+          const div = document.createElement("div");
+          div.style.display = "flex";
+          div.style.justifyContent = "space-between";
+          div.style.alignItems = "center";
+          div.style.padding = "6px";
+          div.style.borderBottom = "1px solid rgba(255,255,255,0.03)";
+          div.innerHTML = `<div style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:220px">${escapeHtml(
+            q.song
+          )} — ${escapeHtml(
+            q.artist
+          )}</div><div style="display:flex; gap:6px"><button class="btn" data-play-queue="${i}">Play</button><button class="btn" data-remove-queue="${i}">Remove</button></div>`;
+          queueList.appendChild(div);
+        });
+
+        // attach small handlers
+        queueList.onclick = (e) => {
+          const playBtn = e.target.closest("button[data-play-queue]");
+          const remBtn = e.target.closest("button[data-remove-queue]");
+          if (playBtn) {
+            const i = Number(playBtn.dataset.playQueue);
+            const rec = playQueue.splice(i, 1)[0];
+            renderQueue();
+            // play rec immediately
+            if (rec.preview_url)
+              startPlayback(
+                rec.preview_url,
+                document.createElement("button"),
+                -1,
+                rec
+              );
+            return;
+          }
+          if (remBtn) {
+            const i = Number(remBtn.dataset.removeQueue);
+            playQueue.splice(i, 1);
+            renderQueue();
+            return;
+          }
+        };
+      }
+
+      // YouTube modal flow
+      // YouTube modal flow (UPDATED VERSION WITH EMBEDDABILITY SUPPORT)
+      async function openYouTube(query, rec) {
+        // Show loading UI
+        ytTitle.textContent = `Searching YouTube: ${rec.song} — ${rec.artist}`;
+        ytFrameWrap.innerHTML = `<div style="padding:30px; color:var(--muted)">Searching YouTube...</div>`;
+        ytModal.classList.add("show");
+        ytModal.setAttribute("aria-hidden", "false");
+
+        try {
+          // Call your backend
+          const res = await fetch(
+            `/youtube_search?query=${encodeURIComponent(query)}`
+          );
+          const data = await res.json();
+
+          if (!res.ok || !data.videoId) {
+            ytFrameWrap.innerHTML = `<div style="padding:24px;color:var(--muted)">No YouTube result found.</div>`;
+            return;
+          }
+
+          const videoId = data.videoId;
+          const watchUrl =
+            data.url || `https://www.youtube.com/watch?v=${videoId}`;
+          openInYT.href = watchUrl;
+
+          // 🔥 NEW: If the video CANNOT be embedded, show fallback
+          if (data.embeddable === false) {
+            ytFrameWrap.innerHTML = `
+        <div style="padding:40px; text-align:center; color:var(--muted);">
+          <div style="font-size:38px; margin-bottom:10px;">🚫</div>
+          <div style="font-size:18px;">This video cannot be played here.</div>
+          <div style="margin-top:6px;">Open on YouTube instead.</div>
+          <a href="${watchUrl}" target="_blank" rel="noopener">
+            <button class="btn" style="margin-top:18px;">
+              Open on YouTube
+            </button>
+          </a>
+        </div>
+      `;
+            ytTitle.textContent = `${rec.song} — ${rec.artist} (Unavailable for embed)`;
+            return;
+          }
+
+          // 🔥 If embeddable, show full iframe
+          ytFrameWrap.innerHTML = `
+      <iframe
+        width="100%"
+        height="480"
+        src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1"
+        frameborder="0"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    `;
+
+          ytTitle.textContent = `${rec.song} — ${rec.artist} (YouTube)`;
+        } catch (err) {
+          console.error("YouTube search failed", err);
+          ytFrameWrap.innerHTML = `<div style="padding:24px;color:var(--muted)">YouTube search failed. Check backend /youtube_search.</div>`;
+        }
+      }
+
+      closeModal.addEventListener("click", () => {
+        ytModal.classList.remove("show");
+        ytModal.setAttribute("aria-hidden", "true");
+        ytFrameWrap.innerHTML = "";
+        openInYT.href = "#";
+      });
+
+      // send simple feedback / like to backend (/log_play)
+      async function sendFeedback(song, artist, action = "like") {
+        try {
+          await fetch("/log_play", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              song,
+              artist,
+              preview_url: null,
+              source: "web",
+              action,
+            }),
+          });
+        } catch (err) {
+          console.debug("feedback failed", err);
+        }
+      }
+      // log play events
+      async function logPlay(song, artist, preview_url, action = "play") {
+        try {
+          await fetch("/log_play", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              song,
+              artist,
+              preview_url,
+              source: "web",
+              action,
+            }),
+          });
+        } catch (err) {
+          console.debug("log_play failed", err);
+        }
+      }
+
+      // Save current recs as JSON+CSV
+      function saveCurrentRecs() {
+        if (!currentRecs || currentRecs.length === 0) {
+          alert("No recommendations to save");
+          return;
+        }
+        const filename = `harmony_${new Date()
+          .toISOString()
+          .slice(0, 19)
+          .replace(/[:T]/g, "-")}`;
+        const jsonStr = JSON.stringify(currentRecs, null, 2);
+        const blobJson = new Blob([jsonStr], { type: "application/json" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blobJson);
+        a.download = filename + ".json";
+        a.click();
+        URL.revokeObjectURL(a.href);
+        // CSV:
+        const csvRows = [
+          [
+            "song",
+            "artist",
+            "year",
+            "popularity",
+            "preview_url",
+            "external_url",
+            "similarity",
+          ],
+        ];
+        currentRecs.forEach((r) =>
+          csvRows.push([
+            r.song,
+            r.artist,
+            r.year || "",
+            r.popularity || "",
+            r.preview_url || "",
+            r.external_url || "",
+            r.similarity || "",
+          ])
+        );
+        const csvBlob = new Blob(
+          [
+            csvRows
+              .map((row) =>
+                row
+                  .map((c) => `"${String(c || "").replace(/"/g, '""')}"`)
+                  .join(",")
+              )
+              .join("\n"),
+          ],
+          { type: "text/csv" }
+        );
+        const a2 = document.createElement("a");
+        a2.href = URL.createObjectURL(csvBlob);
+        a2.download = filename + ".csv";
+        a2.click();
+        URL.revokeObjectURL(a2.href);
+      }
+
+      // small helpers
+      function escapeHtml(s) {
+        return String(s || "")
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;");
+      }
+
+      // Equalizer animation
+      const eqIntervals = new WeakMap();
+      function animateEq(eqEl) {
+        stopEq(eqEl);
+        const bars = Array.from(eqEl.children);
+        const iv = setInterval(() => {
+          bars.forEach((b) => (b.style.height = 6 + Math.random() * 18 + "px"));
+        }, 140);
+        eqIntervals.set(eqEl, iv);
+      }
+      function stopEq(eqEl) {
+        const iv = eqIntervals.get(eqEl);
+        if (iv) clearInterval(iv);
+        eqIntervals.delete(eqEl);
+      }
+
+      // initialize: wire search button
+      searchBtn.addEventListener("click", fetchRecs);
+
+      // expose fetchRecs globally for debugging
+      window.fetchRecs = fetchRecs;
+
+      // keyboard: space toggles first playing item (nice demo)
+      document.addEventListener("keydown", (e) => {
+        if (
+          e.code === "Space" &&
+          !["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)
+        ) {
+          e.preventDefault();
+          if (audioState.audio) {
+            if (audioState.audio.paused) audioState.audio.play();
+            else audioState.audio.pause();
+          } else {
+            // play first available preview in list
+            const btn = document.querySelector(".play-btn:not([disabled])");
+            if (btn) btn.click();
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
